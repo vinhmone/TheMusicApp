@@ -7,30 +7,32 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
 import com.chaubacho.themusicapp.R
 import com.chaubacho.themusicapp.base.BaseActivity
 import com.chaubacho.themusicapp.data.model.Song
+import com.chaubacho.themusicapp.databinding.ActivityMainBinding
 import com.chaubacho.themusicapp.ui.notification.SongNotificationCallback
 import com.chaubacho.themusicapp.service.SongBroadcast
 import com.chaubacho.themusicapp.service.SongPlayerService
 import com.chaubacho.themusicapp.ui.adapter.SongAdapter
 import com.chaubacho.themusicapp.utils.RepositoryUtil
 import com.chaubacho.themusicapp.utils.TimeConvert
-import kotlinx.android.synthetic.main.activity_main.*
 import com.chaubacho.themusicapp.ui.notification.SongNotification.Companion.NEXT
 import com.chaubacho.themusicapp.ui.notification.SongNotification.Companion.PLAY_PAUSE
 import com.chaubacho.themusicapp.ui.notification.SongNotification.Companion.PREVIOUS
 
-class MainActivity : BaseActivity(),
+class MainActivity : BaseActivity<ActivityMainBinding>(),
     SongContract.View,
     SeekBar.OnSeekBarChangeListener,
     View.OnClickListener,
     SongNotificationCallback {
 
-    override val layoutResource get() = R.layout.activity_main
+    override val bindingInflater: (LayoutInflater) -> ActivityMainBinding
+        get() = ActivityMainBinding::inflate
     private val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
     private val songAdapter = SongAdapter(this::onSongClick)
     private val mHandler = Handler()
@@ -100,11 +102,11 @@ class MainActivity : BaseActivity(),
 
     override fun onClick(v: View?) {
         when (v) {
-            imagePlayPauseSong -> playOrPauseSong()
-            imageNextSong -> playNextSong()
-            imagePreviousSong -> playPreviousSong()
-            imageShuffleSongs -> shuffleSongs()
-            imageLoopSong -> loopThisSong()
+            viewBinding.imagePlayPauseSong -> playOrPauseSong()
+            viewBinding.imageNextSong -> playNextSong()
+            viewBinding.imagePreviousSong -> playPreviousSong()
+            viewBinding.imageShuffleSongs -> shuffleSongs()
+            viewBinding.imageLoopSong -> loopThisSong()
         }
     }
 
@@ -122,16 +124,16 @@ class MainActivity : BaseActivity(),
     }
 
     private fun initView() {
-        seekbarControlTime.setOnSeekBarChangeListener(this)
-        imagePlayPauseSong.setOnClickListener(this)
-        imagePreviousSong.setOnClickListener(this)
-        imageNextSong.setOnClickListener(this)
-        imageShuffleSongs.setOnClickListener(this)
-        imageLoopSong.setOnClickListener(this)
+        viewBinding.seekbarControlTime.setOnSeekBarChangeListener(this)
+        viewBinding.imagePlayPauseSong.setOnClickListener(this)
+        viewBinding.imagePreviousSong.setOnClickListener(this)
+        viewBinding.imageNextSong.setOnClickListener(this)
+        viewBinding.imageShuffleSongs.setOnClickListener(this)
+        viewBinding.imageLoopSong.setOnClickListener(this)
     }
 
     private fun initAdapter() {
-        recyclerSongs.adapter = songAdapter
+        viewBinding.recyclerSongs.adapter = songAdapter
     }
 
     private fun initService() {
@@ -162,11 +164,11 @@ class MainActivity : BaseActivity(),
 
     private fun showSongInfo() {
         val currentSong = songs[playingSongId]
-        textSongPlayingName.text = currentSong.name
+        viewBinding.textSongPlayingName.text = currentSong.name
         changeToPlaying(true)
         songPlayerService?.getDuration()?.let {
-            textSongMaxTime.text = TimeConvert.convertMillisecondsToMinute(it)
-            seekbarControlTime.max = it
+            viewBinding.textSongMaxTime.text = TimeConvert.convertMillisecondsToMinute(it)
+            viewBinding.seekbarControlTime.max = it
         }
     }
 
@@ -184,8 +186,8 @@ class MainActivity : BaseActivity(),
     }
 
     private fun setSeekBar(time: Int) {
-        seekbarControlTime.progress = time
-        textSongCurrentTime.text = TimeConvert.convertMillisecondsToMinute(time)
+        viewBinding.seekbarControlTime.progress = time
+        viewBinding.textSongCurrentTime.text = TimeConvert.convertMillisecondsToMinute(time)
         if (time >= songPlayerService?.getDuration()!!) {
             if (isLoop) playThisSong(songs[playingSongId])
             else playNextSong()
@@ -220,7 +222,7 @@ class MainActivity : BaseActivity(),
                 addAll(savedSongs)
                 songAdapter.updateData(this)
             }
-            imageShuffleSongs.setImageResource(R.drawable.ic_shuffle_off_24)
+            viewBinding.imageShuffleSongs.setImageResource(R.drawable.ic_shuffle_off_24)
         } else {
             isShuffle = true
             savedSongs.apply {
@@ -231,17 +233,17 @@ class MainActivity : BaseActivity(),
                 shuffle()
                 songAdapter.updateData(this)
             }
-            imageShuffleSongs.setImageResource(R.drawable.ic_shuffle_on_24)
+            viewBinding.imageShuffleSongs.setImageResource(R.drawable.ic_shuffle_on_24)
         }
     }
 
     private fun loopThisSong() {
         if (isLoop) {
             isLoop = false
-            imageLoopSong.setImageResource(R.drawable.ic_loop_off_24)
+            viewBinding.imageLoopSong.setImageResource(R.drawable.ic_loop_off_24)
         } else {
             isLoop = true
-            imageLoopSong.setImageResource(R.drawable.ic_loop_on_24)
+            viewBinding.imageLoopSong.setImageResource(R.drawable.ic_loop_on_24)
         }
     }
 
@@ -262,11 +264,11 @@ class MainActivity : BaseActivity(),
     private fun changeToPlaying(change: Boolean) {
         if (change) {
             songPlayerService?.play()
-            imagePlayPauseSong.setImageResource(R.drawable.ic_pause_circle_filled_24)
+            viewBinding.imagePlayPauseSong.setImageResource(R.drawable.ic_pause_circle_filled_24)
             updateSeekBar()
         } else {
             songPlayerService?.pause()
-            imagePlayPauseSong.setImageResource(R.drawable.ic_play_circle_filled_24)
+            viewBinding.imagePlayPauseSong.setImageResource(R.drawable.ic_play_circle_filled_24)
         }
     }
 
