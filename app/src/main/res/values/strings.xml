@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TheMusicApp</string>
+    <string name="error_get_data">Can\'t get data</string>
+</resources>
