@@ -1,0 +1,27 @@
+package com.chaubacho.themusicapp.data.source.local.utils
+
+import android.os.AsyncTask
+import java.lang.Exception
+
+class LocalAsyncTask<V, T>(
+    private val callback: OnDataLocalCallback<T>,
+    private val handler: (V) -> T,
+) : AsyncTask<V, Unit, T>() {
+
+    private var exception: Exception? = null
+
+    override fun onPostExecute(result: T?) {
+        super.onPostExecute(result)
+        result?.let {
+            callback.onSucceed(result)
+        } ?: callback.onFailed(exception)
+    }
+
+    override fun doInBackground(vararg params: V): T? =
+        try {
+            handler(params[0])
+        } catch (e: Exception) {
+            exception = e
+            null
+        }
+}

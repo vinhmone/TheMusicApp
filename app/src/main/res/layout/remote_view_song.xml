@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/textRemoteSongInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/sp_16"
+        tools:text="@tools:sample/lorem" />
+
+    <ImageView
+        android:id="@+id/imageRemotePlayPauseSong"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
+        android:layout_below="@id/textRemoteSongInfo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:src="@drawable/ic_pause_circle_filled_24" />
+
+    <ImageView
+        android:id="@+id/imageRemotePreviousSong"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
+        android:layout_below="@id/textRemoteSongInfo"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_toStartOf="@id/imageRemotePlayPauseSong"
+        android:src="@drawable/ic_skip_previous_24" />
+
+    <ImageView
+        android:id="@+id/imageRemoteNextSong"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
+        android:layout_below="@id/textRemoteSongInfo"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_toEndOf="@id/imageRemotePlayPauseSong"
+        android:src="@drawable/ic_skip_next_24" />
+
+</RelativeLayout>
